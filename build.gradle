@@ -1,0 +1,30 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+
+group = 'com.antoine'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.springframework.data', name: 'spring-data-mongodb', version: '3.1.2'
+    implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.4.1'
+    implementation group: 'org.springframework', name: 'spring-web', version: '5.3.16'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: '2.6.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.3'
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.1.1'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
+    testImplementation 'org.springframework.security:spring-security-test:5.5.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
