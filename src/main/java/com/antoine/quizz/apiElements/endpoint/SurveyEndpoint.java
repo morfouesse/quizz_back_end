@@ -1,4 +1,4 @@
-package com.antoine.quizz.endpoint;
+package com.antoine.quizz.apiElements.endpoint;
 
 import org.springframework.stereotype.Component;
 
