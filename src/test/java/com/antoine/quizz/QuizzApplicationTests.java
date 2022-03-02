@@ -53,16 +53,22 @@ class QuizzApplicationTests extends TestCase {
                 .andExpect(jsonPath("$.[0].name", is("survey1")))
                 .andExpect(jsonPath("$.size()", is(5)));
     }
-/*
+
     @Test
     public void testGetSurveyById() throws Exception {
-        mockMvc.perform(TestRequestFactory.factoryGetRequest("/survey/3"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        String id = "1";
+        Mockito.when(surveyService.getSurveyById(id))
+                .thenReturn(getSurveysFake.getSurveys()
+                        .get(0));
+
+
+        mockMvc.perform(TestRequestFactory.factoryGetRequest("/quizz/survey/" + id))
                 .andExpect(status().isOk())
-                .andExpect()
-                // dans le resultat de test JSON, nous avons d'abord un objet
-                .andExpect(jsonPath("$._embedded.surveys[0].name", is("survey3")));
+                .andDo(print())
+                .andExpect(jsonPath("$.name", is("survey1")))
+                // il n'y a pas de liste d'objets, donc 2 valeurs attendu
+                .andExpect(jsonPath("$.size()", is(2)));
     }
-*/
-    // RestAssuredMockMvc.given().auth().none().param("amount")
+
+
 }

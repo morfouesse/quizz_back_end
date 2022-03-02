@@ -2,7 +2,7 @@ package com.antoine.quizz.controller;
 
 
 import com.antoine.quizz.apiElements.endpoint.SurveyEndpoint;
-import com.antoine.quizz.apiElements.header.ApiHeader;
+import com.antoine.quizz.apiElements.header.ApiVersion;
 import com.antoine.quizz.constant.ApiConstants;
 import com.antoine.quizz.dto.SurveyDTO;
 import com.antoine.quizz.model.Survey;
@@ -33,26 +33,17 @@ public class SurveyController {
 
     public SurveyController(SurveyService surveyService) {
         this.surveyService = surveyService;
-        
+
     }
     // ajoute un questionnaire via l'api rest
 
     @GetMapping(path = SurveyEndpoint.SURVEYS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSurveys(@RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        // on pourra accéder à la liste des versions qui existe.
-        ApiHeader apiHeader = new ApiHeader();
-        // si la version de l'api du client existe et qu'il ne s'agit pas de la version stable
-        if (apiHeader.listVersion.contains(apiVersionClient) && apiVersionClient != ApiHeader.STABLE_VERSION) {
-            // on prépare la réponse
-            JSONObject json = new JSONObject();
-            json.put("status", ApiConstants.BAD_REQUEST);
-            json.put("message", ApiConstants.API_VERSION_NOT_STABLE);
-            json.put("apiVersion", apiVersionClient);
+        ApiVersion apiVersion = new ApiVersion();
 
-            return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
-            // si la version de l'api du client existe et qu'il s'agit de la version stable
-        } else if (apiHeader.listVersion.contains(apiVersionClient) && apiVersionClient == ApiHeader.STABLE_VERSION) {
+        // si la version de l'api du client existe et qu'il s'agit de la version stable
+        if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient == ApiVersion.STABLE_VERSION) {
             try {
 
                 List<Survey> surveyList = surveyService.getSurveys();
@@ -62,6 +53,18 @@ public class SurveyController {
             } catch (RuntimeException e) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
             }
+        }
+        // si la version de l'api du client existe et qu'il ne s'agit pas de la version stable
+        else if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient != ApiVersion.STABLE_VERSION) {
+            // on prépare la réponse
+            JSONObject json = new JSONObject();
+            json.put("status", ApiConstants.BAD_REQUEST);
+            json.put("message", ApiConstants.API_VERSION_NOT_STABLE);
+            json.put("apiVersion", apiVersionClient);
+
+            return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
+
+
             // la version de l'api du client n'existe pas
         } else {
 
@@ -80,9 +83,9 @@ public class SurveyController {
 
         LOGGER.info("SurveyController:: apiVersionClient : " + apiVersionClient);
         // on pourra accéder à la liste des versions qui existe.
-        ApiHeader apiHeader = new ApiHeader();
+        ApiVersion apiVersion = new ApiVersion();
         // si la version de l'api du client existe et qu'il ne s'agit pas de la version stable
-        if (apiHeader.listVersion.contains(apiVersionClient) && apiVersionClient != ApiHeader.STABLE_VERSION) {
+        if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient != ApiVersion.STABLE_VERSION) {
             // on prépare la réponse
             JSONObject json = new JSONObject();
             json.put("status", ApiConstants.BAD_REQUEST);
@@ -91,7 +94,7 @@ public class SurveyController {
 
             return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
             // si la version de l'api du client existe et qu'il s'agit de la version stable
-        } else if (apiHeader.listVersion.contains(apiVersionClient) && apiVersionClient == ApiHeader.STABLE_VERSION) {
+        } else if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient == ApiVersion.STABLE_VERSION) {
 
             LOGGER.info("SurveyController::: id : " + id);
 
