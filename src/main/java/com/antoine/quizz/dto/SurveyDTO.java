@@ -1,6 +1,6 @@
 package com.antoine.quizz.dto;
 
-// une classe qui permet de receuillir les données d'un client
+// une classe qui permet de receuillir les données d'un client via de l'HTML ou JSON
 public class SurveyDTO {
     private String id;
 

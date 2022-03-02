@@ -2,6 +2,8 @@ package com.antoine.quizz.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCommandException;
+import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,13 @@ public class ApplicationConfig extends AbstractMongoClientConfiguration {
 
     private MongoClient mongoClient;
 
+
+    // mongodb.database.test ou mongodb.database.dev ou mongodb.database.prod (plus tard)
     @Override
     protected String getDatabaseName() {
-        return env.getProperty("mongodb.database");
+        return env.getProperty("mongodb.database.test");
     }
+
 
     @Override
     public MongoClient mongoClient() {
@@ -35,15 +40,23 @@ public class ApplicationConfig extends AbstractMongoClientConfiguration {
         // si l'ip sur mongodb atlas est lié à l'adresse ip de votre ordi, attention si vous avez
         // une adresse dynamique, l'adresse va changer et alors vous n'aurez plus l'autorisation
         // d'appeler la BDD
-        ConnectionString connectionString = new ConnectionString(Objects.requireNonNull(env.getProperty("mongodb.connection.string")));
 
-        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+        try {
 
-                .applyConnectionString(connectionString)
-                .build();
+            String pass = "root";
+            ConnectionString connectionString = new ConnectionString(
+                    Objects.requireNonNull(env.getProperty("mongodb.connection.string")) + Objects.requireNonNull(
+                            env.getProperty("mongodb.connection.string")));
 
+            MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+                    .credential(MongoCredential.createCredential("Chloe", this.getDatabaseName(), pass.toCharArray()))
+                    .applyConnectionString(connectionString)
+                    .build();
 
-        return MongoClients.create(mongoClientSettings);
+            return MongoClients.create(mongoClientSettings);
+        } catch (MongoCommandException e) {
+            return null;
+        }
 
 
     }

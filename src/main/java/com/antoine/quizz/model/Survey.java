@@ -1,15 +1,14 @@
 package com.antoine.quizz.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 // https://programmingtechie.com/2021/01/06/spring-data-mongodb-tutorial/
+// https://www.invivoo.com/replay/replay-invivoo-documenter-api-springboot-swagger.mp4
+
+// avec auth
+// https://spring.io/guides/tutorials/spring-security-and-angular-js/
 
 //tuto localhost mongodb
 // https://zellwk.com/blog/local-mongodb/
@@ -17,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Data
-@Document(collection ="surveys")
+@Document(collection = "surveys")
 public class Survey {
     // @Indexed(unique = true)
 
@@ -25,7 +24,15 @@ public class Survey {
     private String id;
 
     //@Field("name")
-    private  String name;
+    private String name;
+
+    public Survey() {
+    }
+
+    public Survey(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public String getId() {
         return id;
