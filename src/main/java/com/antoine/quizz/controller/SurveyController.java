@@ -2,15 +2,14 @@ package com.antoine.quizz.controller;
 
 
 import com.antoine.quizz.apiElements.endpoint.SurveyEndpoint;
-import com.antoine.quizz.apiElements.header.ApiVersion;
-import com.antoine.quizz.constant.ApiConstants;
 import com.antoine.quizz.dto.SurveyDTO;
 import com.antoine.quizz.model.Survey;
+import com.antoine.quizz.service.LoggerService;
+import com.antoine.quizz.service.ResponseEntityWithErrorMessageService;
+import com.antoine.quizz.service.SurveyApiVersionService;
 import com.antoine.quizz.service.SurveyService;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,22 +27,27 @@ public class SurveyController {
     //https://www.gekko.fr/blog/les-bonnes-pratiques-a-suivre-pour-developper-des-apis-rest
 
     //sout => print
-    private final SurveyService surveyService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SurveyController.class);
+    @Autowired
+    SurveyService surveyService;
+    @Autowired
+    SurveyApiVersionService surveyApiVersionService;
+    @Autowired
+    ResponseEntityWithErrorMessageService responseEntityWithErrorMessageService;
+    @Autowired
+    LoggerService logger;
 
-    public SurveyController(SurveyService surveyService) {
-        this.surveyService = surveyService;
 
-    }
     // ajoute un questionnaire via l'api rest
 
     @GetMapping(path = SurveyEndpoint.SURVEYS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSurveys(@RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        ApiVersion apiVersion = new ApiVersion();
+        logger.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
 
-        // si la version de l'api du client existe et qu'il s'agit de la version stable
-        if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient == ApiVersion.STABLE_VERSION) {
+        if (surveyApiVersionService.isContainsRealApiVersion(
+                apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
+
+            // si la version de l'api du client existe et qu'il s'agit de la version stable
             try {
 
                 List<Survey> surveyList = surveyService.getSurveys();
@@ -53,27 +57,8 @@ public class SurveyController {
             } catch (RuntimeException e) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
             }
-        }
-        // si la version de l'api du client existe et qu'il ne s'agit pas de la version stable
-        else if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient != ApiVersion.STABLE_VERSION) {
-            // on prépare la réponse
-            JSONObject json = new JSONObject();
-            json.put("status", ApiConstants.BAD_REQUEST);
-            json.put("message", ApiConstants.API_VERSION_NOT_STABLE);
-            json.put("apiVersion", apiVersionClient);
-
-            return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
-
-
-            // la version de l'api du client n'existe pas
         } else {
-
-            JSONObject json = new JSONObject();
-            json.put("status", ApiConstants.BAD_REQUEST);
-            json.put("message", ApiConstants.API_VERSION_DOESNT_EXIST);
-            json.put("apiVersion", apiVersionClient);
-
-            return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(apiVersionClient);
         }
     }
 
@@ -81,22 +66,12 @@ public class SurveyController {
     @GetMapping(path = SurveyEndpoint.SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSurveyById(@PathVariable("id") String id, @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        LOGGER.info("SurveyController:: apiVersionClient : " + apiVersionClient);
-        // on pourra accéder à la liste des versions qui existe.
-        ApiVersion apiVersion = new ApiVersion();
-        // si la version de l'api du client existe et qu'il ne s'agit pas de la version stable
-        if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient != ApiVersion.STABLE_VERSION) {
-            // on prépare la réponse
-            JSONObject json = new JSONObject();
-            json.put("status", ApiConstants.BAD_REQUEST);
-            json.put("message", ApiConstants.API_VERSION_NOT_STABLE);
-            json.put("apiVersion", apiVersionClient);
+        logger.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
 
-            return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
-            // si la version de l'api du client existe et qu'il s'agit de la version stable
-        } else if (apiVersion.listVersion.contains(apiVersionClient) && apiVersionClient == ApiVersion.STABLE_VERSION) {
+        if (surveyApiVersionService.isContainsRealApiVersion(
+                apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
 
-            LOGGER.info("SurveyController::: id : " + id);
+            logger.loggerInfo("SurveyController::: id : " + id);
 
             try {
                 Survey survey = surveyService.getSurveyById(id);
@@ -106,25 +81,17 @@ public class SurveyController {
 
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
             }
-            // la version de l'api du client n'existe pas
-        } else {
-
-            JSONObject json = new JSONObject();
-            json.put("status", ApiConstants.BAD_REQUEST);
-            json.put("message", ApiConstants.API_VERSION_DOESNT_EXIST);
-            json.put("apiVersion", apiVersionClient);
-
-            return new ResponseEntity<>(json.toString(), HttpStatus.BAD_REQUEST);
-        }
-
+        } else
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(apiVersionClient);
     }
 
+    //TODO: refactor other method
 
     @PostMapping(path = SurveyEndpoint.CREATE_SURVEY)
     public ResponseEntity<?> addSurvey(@RequestBody SurveyDTO surveyDTO) {
 
         try {
-            LOGGER.info("SurveyController::: " + surveyDTO.getId());
+            logger.loggerInfo("SurveyController::: " + surveyDTO.getId());
             Survey survey = surveyService.addSurvey(surveyDTO);
             return ResponseEntity.ok(survey);
         } catch (RuntimeException e) {
@@ -138,7 +105,7 @@ public class SurveyController {
     public ResponseEntity<?> updateSurvey(@RequestBody SurveyDTO surveyDTO) {
 
         try {
-            LOGGER.info("SurveyController::: " + surveyDTO.getId());
+            logger.loggerInfo("SurveyController::: " + surveyDTO.getId());
             Survey survey = surveyService.updateSurvey(surveyDTO);
             return ResponseEntity.ok(survey);
         } catch (RuntimeException e) {
@@ -152,7 +119,7 @@ public class SurveyController {
     public ResponseEntity<?> updateSurvey(@PathVariable("id") String id) {
 
         try {
-            LOGGER.info("SurveyController::: " + id);
+            logger.loggerInfo("SurveyController::: " + id);
             String res = surveyService.deleteSurvey(id);
             return ResponseEntity.ok(res);
         } catch (RuntimeException e) {
