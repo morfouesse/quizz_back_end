@@ -1,21 +1,17 @@
 package com.antoine.quizz.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.lang.NonNull;
 
 public class Question {
 
     @Id
+    @NonNull
     public String id;
 
-    public  String name;
+    @NonNull
+    public String name;
 
-    public Question() {
-        super();
-    }
-
-    public Question(String id) {
-        this.id = id;
-    }
 
     public Question(String id, String name) {
         this.id = id;
@@ -32,9 +28,6 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Question{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+        return "Question{" + "id='" + id + '\'' + ", name='" + name + '\'' + '}';
     }
 }

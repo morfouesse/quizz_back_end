@@ -2,14 +2,12 @@ package com.antoine.quizz.controller;
 
 
 import com.antoine.quizz.apiElements.endpoint.SurveyEndpoint;
-import com.antoine.quizz.dto.SurveyDTO;
 import com.antoine.quizz.model.Survey;
-import com.antoine.quizz.service.LoggerService;
-import com.antoine.quizz.service.ResponseEntityWithErrorMessageService;
-import com.antoine.quizz.service.SurveyApiVersionService;
-import com.antoine.quizz.service.SurveyService;
+import com.antoine.quizz.service.loggerService.LoggerServiceImpl;
+import com.antoine.quizz.service.responseEntityApiWithErrorMessageService.ResponseEntityApiWithErrorMessageServiceImpl;
+import com.antoine.quizz.service.surveyApiVersionService.SurveyApiVersionServiceImpl;
+import com.antoine.quizz.service.surveyService.SurveyServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,25 +22,32 @@ import java.util.List;
 @RequestMapping("/quizz/")
 public class SurveyController {
 
-    //https://www.gekko.fr/blog/les-bonnes-pratiques-a-suivre-pour-developper-des-apis-rest
 
+    // https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
+
+    // https://softwareengineering.stackexchange.com/questions/211275/should-an-http-api-always-return-a-body
     //sout => print
-    @Autowired
-    SurveyService surveyService;
-    @Autowired
-    SurveyApiVersionService surveyApiVersionService;
-    @Autowired
-    ResponseEntityWithErrorMessageService responseEntityWithErrorMessageService;
-    @Autowired
-    LoggerService logger;
+    private final SurveyServiceImpl surveyService;
+    private final SurveyApiVersionServiceImpl surveyApiVersionService;
+    private final ResponseEntityApiWithErrorMessageServiceImpl responseEntityWithErrorMessageService;
+    private final LoggerServiceImpl loggerService;
 
 
-    // ajoute un questionnaire via l'api rest
+    public SurveyController(SurveyServiceImpl surveyService,
+            SurveyApiVersionServiceImpl surveyApiVersionService,
+            ResponseEntityApiWithErrorMessageServiceImpl responseEntityWithErrorMessageService,
+            LoggerServiceImpl loggerService) {
+        this.surveyService = surveyService;
+        this.surveyApiVersionService = surveyApiVersionService;
+        this.responseEntityWithErrorMessageService = responseEntityWithErrorMessageService;
+        this.loggerService = loggerService;
+    }
 
     @GetMapping(path = SurveyEndpoint.SURVEYS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getSurveys(@RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
+    public ResponseEntity<?> getSurveys(
+            @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        logger.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
+        loggerService.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
 
         if (surveyApiVersionService.isContainsRealApiVersion(
                 apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
@@ -58,20 +63,22 @@ public class SurveyController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
             }
         } else {
-            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(apiVersionClient);
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(
+                    apiVersionClient);
         }
     }
 
 
     @GetMapping(path = SurveyEndpoint.SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getSurveyById(@PathVariable("id") String id, @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
+    public ResponseEntity<?> getSurveyById(@PathVariable("id") String id,
+            @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        logger.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
+        loggerService.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
 
         if (surveyApiVersionService.isContainsRealApiVersion(
                 apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
 
-            logger.loggerInfo("SurveyController::: id : " + id);
+            loggerService.loggerInfo("SurveyController::: id : " + id);
 
             try {
                 Survey survey = surveyService.getSurveyById(id);
@@ -82,51 +89,86 @@ public class SurveyController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
             }
         } else
-            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(apiVersionClient);
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(
+                    apiVersionClient);
     }
 
-    //TODO: refactor other method
 
-    @PostMapping(path = SurveyEndpoint.CREATE_SURVEY)
-    public ResponseEntity<?> addSurvey(@RequestBody SurveyDTO surveyDTO) {
+    @PostMapping(path = SurveyEndpoint.CREATE_SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addSurvey(@RequestBody Survey surveyClient,
+            @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        try {
-            logger.loggerInfo("SurveyController::: " + surveyDTO.getId());
-            Survey survey = surveyService.addSurvey(surveyDTO);
-            return ResponseEntity.ok(survey);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
+        loggerService.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
 
-        }
+        if (surveyApiVersionService.isContainsRealApiVersion(
+                apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
+
+            loggerService.loggerInfo(
+                    "SurveyController::: " + "surveyCLient : " + surveyClient.getId());
+
+            try {
+
+                surveyService.addSurvey(surveyClient);
+
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            } catch (RuntimeException e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
+            }
+        } else
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(
+                    apiVersionClient);
+    }
+
+    @PutMapping(path = SurveyEndpoint.UPDATE_SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateSurvey(@RequestBody Survey surveyClient,
+            @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
+
+
+        loggerService.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
+
+        if (surveyApiVersionService.isContainsRealApiVersion(
+                apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
+
+            loggerService.loggerInfo(
+                    "SurveyController::: " + "surveyClient : " + surveyClient.getId());
+
+            try {
+
+                surveyService.updateSurvey(surveyClient);
+
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (RuntimeException e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
+            }
+        } else
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(
+                    apiVersionClient);
 
     }
 
-    @PutMapping(path = SurveyEndpoint.UPDATE_SURVEY)
-    public ResponseEntity<?> updateSurvey(@RequestBody SurveyDTO surveyDTO) {
+    @DeleteMapping(path = SurveyEndpoint.DELETE_SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateSurvey(@PathVariable("id") String id,
+            @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
-        try {
-            logger.loggerInfo("SurveyController::: " + surveyDTO.getId());
-            Survey survey = surveyService.updateSurvey(surveyDTO);
-            return ResponseEntity.ok(survey);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
 
-        }
+        loggerService.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
 
-    }
+        if (surveyApiVersionService.isContainsRealApiVersion(
+                apiVersionClient) && surveyApiVersionService.isApiVersionStable(apiVersionClient)) {
+            loggerService.loggerInfo("SurveyController::: " + " id : " + id);
 
-    @DeleteMapping(path = SurveyEndpoint.DELETE_SURVEY)
-    public ResponseEntity<?> updateSurvey(@PathVariable("id") String id) {
+            try {
+                loggerService.loggerInfo("SurveyController::: " + id);
 
-        try {
-            logger.loggerInfo("SurveyController::: " + id);
-            String res = surveyService.deleteSurvey(id);
-            return ResponseEntity.ok(res);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
+                surveyService.deleteSurvey(id);
 
-        }
-
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } catch (RuntimeException e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found", e);
+            }
+        } else
+            return responseEntityWithErrorMessageService.getStringResponseEntityWithError(
+                    apiVersionClient);
     }
 
 }

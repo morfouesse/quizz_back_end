@@ -1,7 +1,10 @@
 package com.antoine.quizz.apiElements.header;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 
+@Component
 public class ApiVersion {
 
     public static final String HEADER_NAME_VERSION = "X-API-VERSION";

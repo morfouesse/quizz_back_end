@@ -23,10 +23,9 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: '2.6.3'
     // permet de gérer la sécurité comme CSRF, auth et autre
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.3'
-    // ca me permet de convertir un DTO en model
-    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.1.1'
     // fonctionne à moitié avec la version actuelle d'intellij, j'utilise alors que la partie LOG qui fonctionne
     implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'junit:junit:4.13.1'
     // starter avec différentes dépendances JUnit, Spring Test, AssertJ, Hamcrest, Mockito, JSONNassert, JsonPath
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.4'
     //testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
@@ -34,6 +33,9 @@ dependencies {
     testImplementation group: 'io.rest-assured', name: 'spring-mock-mvc', version: '4.5.1'
     // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
     implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine
+    //suite test
+    implementation group: 'org.junit.platform', name: 'junit-platform-suite-engine', version: '1.8.2'
 
 
 }
