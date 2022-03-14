@@ -20,8 +20,9 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/quizz/")
+// on autorise mon client angular
+@CrossOrigin(origins = "http://localhost:4200")
 public class SurveyController {
-
 
     // https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
 
@@ -42,6 +43,7 @@ public class SurveyController {
         this.responseEntityWithErrorMessageService = responseEntityWithErrorMessageService;
         this.loggerService = loggerService;
     }
+
 
     @GetMapping(path = SurveyEndpoint.SURVEYS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSurveys(
