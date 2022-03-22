@@ -3,7 +3,7 @@ package com.antoine.quizz.surveyTest;
 import com.antoine.quizz.TestRequestFactory;
 import com.antoine.quizz.apiElementsTest.ApiEndpointsTest;
 import com.antoine.quizz.apiElementsTest.MethodsHttp;
-import com.antoine.quizz.fixture.GetSurveysFake;
+import com.antoine.quizz.fixtureTest.GetSurveysFakeTest;
 import com.antoine.quizz.model.Survey;
 import com.antoine.quizz.service.surveyService.SurveyServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class SurveyControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private GetSurveysFake getSurveysFake;
+    private GetSurveysFakeTest getSurveysFakeTest;
 
     @MockBean
     private SurveyServiceImpl surveyServiceImpl;
@@ -52,7 +52,7 @@ public class SurveyControllerTest {
         Mockito.when(surveyServiceImpl.getSurveys())
                 .thenReturn(
                         //THEN
-                        getSurveysFake.getSurveys());
+                        getSurveysFakeTest.getSurveys());
 
 
         mockMvc.perform(Objects.requireNonNull(

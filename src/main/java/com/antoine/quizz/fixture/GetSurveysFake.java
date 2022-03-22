@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class GetSurveysFake {
 
-    public static final int SURVEYS = 5;
+    public static final int SURVEYS = 10;
 
     public List<Survey> getSurveys() {
         List<Survey> surveyList = new ArrayList<>();

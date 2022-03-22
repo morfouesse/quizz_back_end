@@ -29,7 +29,7 @@ public class ApplicationConfig extends AbstractMongoClientConfiguration {
     // mongodb.database.test ou mongodb.database.dev ou mongodb.database.prod (plus tard)
     @Override
     protected String getDatabaseName() {
-        return env.getProperty("mongodb.database.test");
+        return env.getProperty("mongodb.database.dev");
     }
 
 
@@ -44,12 +44,13 @@ public class ApplicationConfig extends AbstractMongoClientConfiguration {
         try {
 
             String pass = "root";
-            ConnectionString connectionString = new ConnectionString(
-                    Objects.requireNonNull(env.getProperty("mongodb.connection.string")) + Objects.requireNonNull(
-                            env.getProperty("mongodb.connection.string")));
+            ConnectionString connectionString = new ConnectionString(Objects.requireNonNull(
+                    env.getProperty("mongodb.connection.string")) + Objects.requireNonNull(
+                    env.getProperty("mongodb.connection.string")));
 
             MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-                    .credential(MongoCredential.createCredential("Chloe", this.getDatabaseName(), pass.toCharArray()))
+                    .credential(MongoCredential.createCredential("Chloe", this.getDatabaseName(),
+                            pass.toCharArray()))
                     .applyConnectionString(connectionString)
                     .build();
 
