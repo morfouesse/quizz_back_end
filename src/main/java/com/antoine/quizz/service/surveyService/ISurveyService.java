@@ -1,19 +1,20 @@
 package com.antoine.quizz.service.surveyService;
 
 import com.antoine.quizz.model.Survey;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
 public interface ISurveyService {
 
-    public List<Survey> getSurveys();
+    List<Survey> getSurveys();
 
-    public Survey getSurveyById(String id);
+    Survey getSurveyById(@NonNull String id);
 
-    public void addSurvey(Survey survey);
+    void addSurvey(@NonNull Survey survey);
 
-    public void updateSurvey(Survey survey);
+    void updateSurvey(@NonNull Survey survey);
 
-    public void deleteSurvey(String id);
+    void deleteSurvey(@NonNull String id);
 
 }
