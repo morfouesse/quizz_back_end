@@ -2,6 +2,7 @@ package com.antoine.quizz.surveyTest.surveyService;
 
 import com.antoine.quizz.fixtureTest.GetSurveysFakeTest;
 import com.antoine.quizz.model.Survey;
+import com.antoine.quizz.repository.ISurveyRepository;
 import com.antoine.quizz.service.surveyService.SurveyServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,10 +11,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
 public class UpdateSurveyServiceTest {
     @Mock
-    private com.antoine.quizz.repository.ISurveyRepository iSurveyRepository;
+    private ISurveyRepository iSurveyRepository = mock(ISurveyRepository.class);
 
     private SurveyServiceImpl surveyServiceImpl;
 

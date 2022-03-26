@@ -15,11 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
 public class GetSurveysServiceTest {
 
     @Mock
-    private ISurveyRepository ISurveyRepository;
+    private ISurveyRepository ISurveyRepository = mock(ISurveyRepository.class);
 
     private SurveyServiceImpl surveyServiceImpl;
 

@@ -8,13 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AddSurveyServiceTest {
     @Mock
-    private ISurveyRepository iSurveyRepository;
+    private ISurveyRepository iSurveyRepository = mock(ISurveyRepository.class);
 
     private SurveyServiceImpl surveyServiceImpl;
 
@@ -38,9 +39,7 @@ public class AddSurveyServiceTest {
 
         //THEN
         // nous sommes dans une méthode void, donc on vérifie seulement la dépendance.
-        Mockito.verify(iSurveyRepository, Mockito.times(1))
-                .save(survey);
+        verify(iSurveyRepository, times(1)).save(survey);
     }
-
-
+    
 }

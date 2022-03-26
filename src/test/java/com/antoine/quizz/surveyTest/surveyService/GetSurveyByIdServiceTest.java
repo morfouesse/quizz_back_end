@@ -18,10 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
 public class GetSurveyByIdServiceTest {
     @Mock
-    private ISurveyRepository iSurveyRepository;
+    private ISurveyRepository iSurveyRepository = mock(ISurveyRepository.class);
 
     private SurveyServiceImpl surveyServiceImpl;
 
