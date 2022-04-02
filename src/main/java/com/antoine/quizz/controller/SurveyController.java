@@ -72,7 +72,7 @@ public class SurveyController {
 
 
     @GetMapping(path = SurveyEndpoint.SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getSurveyById(@PathVariable("id") String id,
+    public ResponseEntity<?> getSurveyById(@PathVariable("id") int id,
             @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
         loggerService.loggerInfo("SurveyController:: apiVersionClient : " + apiVersionClient);
@@ -149,7 +149,7 @@ public class SurveyController {
     }
 
     @DeleteMapping(path = SurveyEndpoint.DELETE_SURVEY, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateSurvey(@PathVariable("id") String id,
+    public ResponseEntity<?> updateSurvey(@PathVariable("id") int id,
             @RequestHeader(value = "X-API-VERSION") int apiVersionClient) {
 
 

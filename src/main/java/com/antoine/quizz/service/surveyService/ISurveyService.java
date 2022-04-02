@@ -9,12 +9,12 @@ public interface ISurveyService {
 
     List<Survey> getSurveys();
 
-    Survey getSurveyById(@NonNull String id);
+    Survey getSurveyById(@NonNull int id);
 
     void addSurvey(@NonNull Survey survey);
 
     void updateSurvey(@NonNull Survey survey);
 
-    void deleteSurvey(@NonNull String id);
+    void deleteSurvey(@NonNull int id);
 
 }

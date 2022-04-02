@@ -71,7 +71,7 @@ public class SurveyControllerTest {
         Survey survey = new Survey("5", "survey5");
         String id = "5";
         //WHEN
-        Mockito.when(surveyServiceImpl.getSurveyById(id))
+        Mockito.when(surveyServiceImpl.getSurveyById(Integer.parseInt(id)))
                 .thenReturn(
                         //THEN
                         survey);

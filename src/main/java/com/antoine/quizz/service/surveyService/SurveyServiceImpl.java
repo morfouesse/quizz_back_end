@@ -17,9 +17,9 @@ public record SurveyServiceImpl(
     }
 
     @Override
-    public Survey getSurveyById(@NonNull String id) {
+    public Survey getSurveyById(@NonNull int id) {
 
-        Optional<Survey> survey = ISurveyRepository.findById(id);
+        Optional<Survey> survey = ISurveyRepository.findById(String.valueOf(id));
         //si survey n'es pas null, on récupere ces données sinon on leve une exception
         return survey.orElseThrow();
     }
@@ -37,7 +37,7 @@ public record SurveyServiceImpl(
     }
 
     @Override
-    public void deleteSurvey(@NonNull String id) {
-        ISurveyRepository.deleteById(id);
+    public void deleteSurvey(@NonNull int id) {
+        ISurveyRepository.deleteById(String.valueOf(id));
     }
 }

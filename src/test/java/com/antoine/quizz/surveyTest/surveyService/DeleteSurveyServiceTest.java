@@ -4,19 +4,12 @@ import com.antoine.quizz.fixtureTest.GetSurveysFakeTest;
 import com.antoine.quizz.model.Survey;
 import com.antoine.quizz.repository.ISurveyRepository;
 import com.antoine.quizz.service.surveyService.SurveyServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 
@@ -43,7 +36,7 @@ public class DeleteSurveyServiceTest {
                 .get(0);
 
         //WHEN
-        surveyServiceImpl.deleteSurvey(survey.getId());
+        surveyServiceImpl.deleteSurvey(Integer.parseInt(survey.getId()));
 
         //THEN
         // nous sommes dans une méthode void, donc on vérifie seulement la dépendance.
@@ -52,23 +45,15 @@ public class DeleteSurveyServiceTest {
     }
 
 
-    @ParameterizedTest
-    @EmptySource
-    @ValueSource(strings = " ")
-    public void getInvalidArgSurveyByIdTest(String id) {
+    @Test
+    public void notFoundIdSurveyTest() {
         //GIVEN
-
-        Optional<Survey> optional = Optional.empty();
-
-        Mockito.when(iSurveyRepository.findById(id))
-                .thenReturn(optional);
+        int id = 1000;
+        iSurveyRepository.deleteById(String.valueOf(id));
 
 
-        //THEN
-        Assertions.assertThrows(NoSuchElementException.class, () -> {
-            //WHEN
-            surveyServiceImpl.getSurveyById(id);
-        });
+        Mockito.verify(iSurveyRepository, Mockito.times(1))
+                .deleteById(String.valueOf(id));
     }
 
 

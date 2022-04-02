@@ -8,17 +8,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GetSurveyByIdServiceTest {
@@ -42,16 +39,31 @@ public class GetSurveyByIdServiceTest {
         Survey survey = getSurveysFakeTest.getSurveys()
                 .get(0);
 
-        Mockito.when(iSurveyRepository.findById(survey.getId()))
-                .thenReturn(Optional.of(survey));
+        when(iSurveyRepository.findById(survey.getId())).thenReturn(Optional.of(survey));
         //WHEN
-        final Survey res = surveyServiceImpl.getSurveyById(survey.getId());
-        
+        final Survey res = surveyServiceImpl.getSurveyById(Integer.parseInt(survey.getId()));
+
         //THEN
         Assertions.assertEquals(survey, res);
     }
 
+    @Test
+    public void getNotFoundIdTest() {
+        //GIVEN
+        Optional<Survey> optional = Optional.empty();
+        int id = 1000;
 
+        when(iSurveyRepository.findById(String.valueOf(id))).thenReturn(optional);
+        
+
+        //THEN
+        Assertions.assertThrows(NoSuchElementException.class, () -> {
+            //WHEN
+            surveyServiceImpl.getSurveyById(id);
+        });
+    }
+
+    /* pour tester un string
     @ParameterizedTest
     @EmptySource
     @ValueSource(strings = " ")
@@ -70,6 +82,6 @@ public class GetSurveyByIdServiceTest {
             surveyServiceImpl.getSurveyById(id);
         });
     }
-
+*/
 
 }
