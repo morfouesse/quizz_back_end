@@ -13,11 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
 public class GetQuestionsServiceTest {
 
     @Mock
-    private IQuestionRepository iQuestionRepository;
+    private IQuestionRepository iQuestionRepository = mock(IQuestionRepository.class);
 
     private QuestionServiceImpl questionService;
 

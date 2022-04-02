@@ -17,25 +17,31 @@ dependencies {
     implementation group: 'org.springframework.data', name: 'spring-data-mongodb', version: '3.1.2'
     // connection à mongoDB
     implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.4.1'
-    // la partie web
-    implementation group: 'org.springframework', name: 'spring-web', version: '5.3.16'
     // API REST
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: '2.6.3'
     // permet de gérer la sécurité comme CSRF, auth et autre
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.3'
     // fonctionne à moitié avec la version actuelle d'intellij, j'utilise alors que la partie LOG qui fonctionne
     implementation 'org.projectlombok:lombok:1.18.22'
-    implementation 'junit:junit:4.13.1'
-    // starter avec différentes dépendances JUnit, Spring Test, AssertJ, Hamcrest, Mockito, JSONNassert, JsonPath
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.4'
-    //testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
-    testImplementation 'org.springframework.security:spring-security-test:5.6.2'
-    testImplementation group: 'io.rest-assured', name: 'spring-mock-mvc', version: '4.5.1'
-    // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+    //annotation main
     implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
-    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine
+
+
+    //annotation spring boot
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.6.5'
+    //JUNIT
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
+    // annoation autoconfigure
+    implementation group: 'org.springframework.boot', name: 'spring-boot-test-autoconfigure', version: '2.6.6'
+    // mockito Junit
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.4.0'
+    // mockito inline permet davoir les dernieres release, pour linstant me permet de faire fonctionner un mock sur un record
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
+    testImplementation group: 'io.rest-assured', name: 'spring-mock-mvc', version: '4.5.1'
     //suite test
-    implementation group: 'org.junit.platform', name: 'junit-platform-suite-engine', version: '1.8.2'
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-suite-engine', version: '1.8.2'
 
 
 }

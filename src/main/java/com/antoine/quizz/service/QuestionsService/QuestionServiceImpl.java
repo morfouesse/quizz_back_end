@@ -9,13 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class QuestionServiceImpl implements IQuestionService {
-
-    private final IQuestionRepository iQuestionRepository;
-
-    public QuestionServiceImpl(IQuestionRepository iQuestionRepository) {
-        this.iQuestionRepository = iQuestionRepository;
-    }
+public record QuestionServiceImpl(
+        IQuestionRepository iQuestionRepository) implements IQuestionService {
 
     @Override
     public List<Question> getQuestions() {

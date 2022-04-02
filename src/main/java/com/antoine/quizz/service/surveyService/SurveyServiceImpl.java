@@ -1,7 +1,6 @@
 package com.antoine.quizz.service.surveyService;
 
 import com.antoine.quizz.model.Survey;
-import com.antoine.quizz.repository.ISurveyRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SurveyServiceImpl implements ISurveyService {
-
-    private final ISurveyRepository ISurveyRepository;
-
-
-    public SurveyServiceImpl(ISurveyRepository ISurveyRepository) {
-        this.ISurveyRepository = ISurveyRepository;
-    }
+public record SurveyServiceImpl(
+        com.antoine.quizz.repository.ISurveyRepository ISurveyRepository) implements ISurveyService {
 
     @Override
     public List<Survey> getSurveys() {

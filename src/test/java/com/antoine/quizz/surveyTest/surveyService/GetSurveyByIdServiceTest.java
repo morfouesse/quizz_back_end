@@ -46,7 +46,7 @@ public class GetSurveyByIdServiceTest {
                 .thenReturn(Optional.of(survey));
         //WHEN
         final Survey res = surveyServiceImpl.getSurveyById(survey.getId());
-
+        
         //THEN
         Assertions.assertEquals(survey, res);
     }
