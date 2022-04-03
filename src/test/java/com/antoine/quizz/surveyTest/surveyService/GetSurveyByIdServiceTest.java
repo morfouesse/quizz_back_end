@@ -51,7 +51,7 @@ public class GetSurveyByIdServiceTest {
     public void getNotFoundIdTest() {
         //GIVEN
         Optional<Survey> optional = Optional.empty();
-        int id = 1000;
+        int id = -1000;
 
         when(iSurveyRepository.findById(String.valueOf(id))).thenReturn(optional);
         
